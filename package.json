@@ -1,0 +1,11 @@
+{
+  "name": "advent-of-code-2020",
+  "version": "1.0.0",
+  "description": "",
+  "main": "all.js",
+  "author": "fhfaa",
+  "license": "MIT",
+  "dependencies": {
+    "nodemon": "~2.0.6"
+  }
+}
