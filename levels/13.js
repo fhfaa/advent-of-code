@@ -63,7 +63,7 @@ const buses2 = buses.
   split(',').
   map((n, i) => n === 'x' ? null : {
     num: +n,
-    r: (+n - (i % +n)) % +n
+    r: i ? +n - (i % +n) : 0
   }).
   filter(Boolean);
 
