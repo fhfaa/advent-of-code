@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { url } = require('inspector');
 const lvl = __filename.replace(/.*?[\\\/]/g, '').replace(/[\D]/g, '');
 let input = fs.readFileSync(`${__dirname}/../input/${lvl}.txt`, 'utf8');
 
@@ -81,51 +82,55 @@ data = data.split('\n');
 // Copy for pt.2
 const rules2 = JSON.parse(JSON.stringify(rules));
 
+function solve(rules) {
+  // pt.1
+  // This is obviously not going to work for part 2, but why not generate a MASSIVE regex just because?
+  let changesMade;
+  do {
+    changesMade = false;
+    for (let key of Object.keys(rules)) {
+      const ruleDef = rules[key];
+      if (typeof ruleDef !== 'string') {
+        let ruleStrCount = 0;
 
-// pt.1
-// This is obviously not going to work for part 2, but why not generate a MASSIVE regex just because?
-let changesMade;
-do {
-  changesMade = false;
-  for (let key of Object.keys(rules)) {
-    const ruleDef = rules[key];
-    if (typeof ruleDef !== 'string') {
-      let ruleStrCount = 0;
+          for (let subIndex = 0; subIndex < ruleDef.length; subIndex++) {
+            
+            const sub = ruleDef[subIndex];
+            if (typeof sub !== 'string') {
+              let stringStrCount = 0;
 
-        for (let subIndex = 0; subIndex < ruleDef.length; subIndex++) {
-          
-          const sub = ruleDef[subIndex];
-          if (typeof sub !== 'string') {
-            let stringStrCount = 0;
-
-            for (let stringIndex = 0; stringIndex < sub.length; stringIndex++) {
-              if (typeof rules[sub[stringIndex]] === 'string') {
-                sub[stringIndex] = rules[sub[stringIndex]];
+              for (let stringIndex = 0; stringIndex < sub.length; stringIndex++) {
+                if (typeof rules[sub[stringIndex]] === 'string') {
+                  sub[stringIndex] = rules[sub[stringIndex]];
+                }
+                stringStrCount += typeof sub[stringIndex] === 'string' ? 1 : 0;
               }
-              stringStrCount += typeof sub[stringIndex] === 'string' ? 1 : 0;
-            }
 
-            if (stringStrCount === sub.length) {
-              ruleDef[subIndex] = sub.join('');
-              changesMade = true;
-              ruleStrCount++;
+              if (stringStrCount === sub.length) {
+                ruleDef[subIndex] = sub.join('');
+                changesMade = true;
+                ruleStrCount++;
+              }
+            } else {
+              ruleStrCount ++;
             }
-          } else {
-            ruleStrCount ++;
           }
+        
+        if (ruleStrCount === ruleDef.length) {
+          rules[key] = '(' + ruleDef.join('|') + ')';
+          changesMade = true;
         }
-
-      if (ruleStrCount === ruleDef.length) {
-        rules[key] = '(' + ruleDef.join('|') + ')';
-        changesMade = true;
       }
     }
-  }
-} while (changesMade);
+  } while (changesMade);
+  
+  return rules;
+}
 
 
-// console.log(rules[0]);
+solve(rules);
 /*
+console.log(rules[0]);
 ((((a(a(b(b(b(a(a|b)|ba)|a(bb))|a(a(ba|(a|b)b)|b(bb|aa)))|a(a((bb|aa)b|(ba|(a|b)b)a)|
 b(b(aa|ab)|a(ab|bb))))|b(a(b((ba|(a|b)b)a|(aa|b(a|b))b)|a((ba|aa)b|(bb|aa)a))|b(a(a(b
 a)|b(ba|aa))|b(a(ba|(a|b)b)|b(a(a|b)|ba)))))|b(b((((ab|bb)a|(ba)b)a|(a(ab)|b(ba|(a|b)
@@ -163,12 +168,44 @@ console.log('Part 1: ', part1);
 
 // pt.2
 /*
-As you look over the list of messages, you realize your matching rules aren't quite right.
+Uff, keinen Nerv für diese einige Aufgabe den ganzen Quatsch mit formalen Sprachen,
+und wat weiß ich wieder rauszukramen. Wir haben drecking angefangen, dann machen wirs
+drecking fertig. Schade, dass JS nicht noch rekursive RegEx hat :D
+
+"As you look over the list of messages, you realize your matching rules aren't quite right.
 To fix them, completely replace rules 8: 42 and 11: 42 31 with the following:
 8: 42 | 42 8
-11: 42 31 | 42 11 31
+11: 42 31 | 42 11 31"
 */
 rules2[8] = [[42], [42, 8]];
 rules2[11] = [[42, 31], [42, 11, 31]];
+solve(rules2);
 
-console.log('Part 2: ', 'TODO', 12);
+/*
+See what's left unsolved:
+
+Object.keys(rules2).forEach(key => {
+  if (typeof rules2[key] !== 'string') {
+    console.log(`Missing: Rule ${key}: `, rules2[key]);
+  }
+})
+
+Only 0 8 and 11 are left. 0 consists of 8 and 11.
+8: 42 | 42 8 => 42+
+11: 42 31 | 42 11 31 ==> 42{n} 31{n}
+0: 8 11 => 42+ 42{n} 31{n}
+*/
+rules2[8] = `(${rules2[42]})+`;
+rules2[11] = '(' + 
+  ([1, 2, 3, 4].
+    // Fake recursion by hardcoding it n 'levels' deep.
+    // Turns out 4 is enough for our input.
+    // ((42{1}31{1})|(42{2}31{2})|(42{3}31{3})|(42{4}31{4}))
+    map(n => `(${rules[42]}){${n}}${rules[31]}{${n}}`).join('|')
+  ) + 
+  ')';
+rules[0] = `${rules2[8]}${rules2[11]}`;
+
+const regex2 = new RegExp(`^${rules[0]}$`);
+const part2 = data.reduce((ret, str) => ret + regex2.test(str), 0);
+console.log('Part 2: ', part2);
