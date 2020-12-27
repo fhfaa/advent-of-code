@@ -2,7 +2,7 @@ const fs = require('fs');
 const lvl = __filename.replace(/.*?[\\\/]/g, '').replace(/[\D]/g, '');
 let input = fs.readFileSync(`${__dirname}/../input/${lvl}.txt`, 'utf8');
 
-/* *
+/* */
 input = `389125467`;
 /* */
 
@@ -48,3 +48,70 @@ const pos1 = numbers.indexOf(1);
 const part1 = [...numbers, ...numbers].slice(pos1 + 1, pos1 + numbers.length).join('');
 
 console.log('Part 1: ', part1, 67384529);
+
+
+
+
+
+// pt.2
+// Splicing and reorganizing the array takes way too long,
+// even without the convencience thing at the top.
+//
+// A linked list should give us near-instant re-arranging,
+// but turns out searching ( O(n) ) is WAY too slow,
+// even after inlining all the list methods.
+/*
+class ListElem {
+  constructor(val, next) {
+    this.val = val;
+    this.next = next || null;
+  }
+  closeLoop() {
+    let cur = this;
+    while (cur.next) {
+      cur = cur.next;
+    }
+    cur.next = this;
+  }
+}
+
+
+numbers = input.split('').map(parseFloat);
+numbers = numbers.concat([...new Array(1_000_001).keys()].slice(10))
+let current = numbers.reverse().reduce((next, num) => new ListElem(num, next), null);
+current.closeLoop();
+
+for (let i = 0; i < 10_000_000; i++) {
+  // if ((i % 100_000) === 0) {
+  //  console.log(i);
+  // }
+
+  // Take out the next three cups
+  const spliced = current.next;
+  current.next = spliced.next.next.next;
+
+  // Figure out the next number to search for
+  let destNum = current.val;
+  do {
+    destNum = destNum - 1 || numbers.length;
+  } while (spliced.val === destNum || spliced.next.val === destNum || spliced.next.next.val === destNum);
+
+  // Search list for that number number
+  let destination = current.next;
+  while (destination.val !== destNum) {
+    destination = destination.next;
+  }
+
+  // Insert the removed cups
+  spliced.next.next.next = destination.next;
+  destination.next = spliced;
+
+  current = current.next;
+}
+
+// Search list for `1`
+while (current.val !== 1) {
+  current = current.next;
+}
+console.log('Part 2: ', current.next.val * current.next.next.val);
+*/
