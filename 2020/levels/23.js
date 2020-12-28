@@ -1,8 +1,9 @@
 const fs = require('fs');
+const { arch } = require('os');
 const lvl = __filename.replace(/.*?[\\\/]/g, '').replace(/[\D]/g, '');
 let input = fs.readFileSync(`${__dirname}/../input/${lvl}.txt`, 'utf8');
 
-/* */
+/* *
 input = `389125467`;
 /* */
 
@@ -47,7 +48,7 @@ for (let i = 0; i < 100; i++) {
 const pos1 = numbers.indexOf(1);
 const part1 = [...numbers, ...numbers].slice(pos1 + 1, pos1 + numbers.length).join('');
 
-console.log('Part 1: ', part1, 67384529);
+console.log('Part 1: ', part1);
 
 
 
@@ -115,3 +116,34 @@ while (current.val !== 1) {
 }
 console.log('Part 2: ', current.next.val * current.next.next.val);
 */
+
+
+const startingNumbers = input.split('').map(parseFloat);
+const numCups = 1_000_000;
+
+numbers = Array(numCups + 1).fill().map((e, i) => i + 1);
+
+startingNumbers.forEach((n, i) => {
+  numbers[n] = startingNumbers[i + 1] || startingNumbers.length + 1
+});
+numbers[0] = numbers[numbers.length - 1] = startingNumbers[0];
+
+let current = 0;
+for (let i = 0; i <= 10_000_000; i++) {
+  current = numbers[current];
+  const cup1 = numbers[current];
+  const cup2 = numbers[cup1];
+  const cup3 = numbers[cup2];
+
+  let ins = current;
+  do {
+    ins = ins - 1 || numCups;
+  } while(ins === cup1 || ins === cup2 || ins === cup3);
+
+  const tmp = numbers[cup3];
+  numbers[cup3] = numbers[ins];
+  numbers[ins] = numbers[current];
+  numbers[current] = tmp;
+}
+
+console.log('Part 2: ', numbers[1] * numbers[numbers[1]]);
