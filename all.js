@@ -5,7 +5,7 @@ const { existsSync } = require('fs');
 function runYear(year) {
   console.log(`\n--------------\n--   ${year}   --\n--------------\n`);
 
-  [...Array(24).keys()].forEach(i => {
+  [...Array(25).keys()].forEach(i => {
     const lvl = i + 1;
     const file = `./${year}/levels/${lvl}.js`
 
