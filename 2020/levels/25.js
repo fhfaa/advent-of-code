@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { getHeapCodeStatistics } = require('v8');
 const lvl = __filename.replace(/.*?[\\\/]/g, '').replace(/[\D]/g, '');
-let input = fs.readFileSync(`${__dirname}/../input/${lvl}.txt`, 'utf8');
+let input = fs.readFileSync(`${__dirname}/../input/${lvl}.txt`, 'utf8').replace(/\r/, '');
 
 /* *
 input = `5764801
