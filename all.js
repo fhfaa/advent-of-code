@@ -17,5 +17,6 @@ function runYear(year) {
   });
 }
 
+runYear(2021);
 runYear(2020);
 runYear(2019);
