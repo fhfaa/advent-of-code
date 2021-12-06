@@ -6,7 +6,7 @@ let input = fs.readFileSync(`${__dirname}/../input/${lvl}.txt`, 'utf8').replace(
 input = `3,4,3,1,2`;
 /* */
 
-// Count occurences per timer number. array index = timer value
+// Count occurrences per timer number. array index = timer value
 input = input.split(',').reduce((ret, n) => {
   ret[+n]++;
   return ret;
