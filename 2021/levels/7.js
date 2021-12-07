@@ -9,9 +9,21 @@ input = input.split(',').map(parseFloat).sort((a, b) => a - b);
 
 
 // pt.1
+/*
+// got lucky here at first, but wouldn't have worked for other inputs
 const median = input[Math.floor(input.length / 2)];
 const part1 = input.reduce((ret, n) => ret + Math.abs(n - median), 0);
-console.log('Part 1: ', part1);
+*/
+// reusing the uglier pt.2 way here instead
+let minCost = +Infinity;
+// for each point between smallest and highest crab position
+for (let pos = input[0], last = input[input.length - 1]; pos <= last; pos++) {
+  // sum up all fuel costs, remember only the smallest sum
+  const totalCost = input.reduce((sum, crabPos) => sum + Math.abs(crabPos - pos), 0);
+  minCost = Math.min(minCost, totalCost);
+}
+
+console.log('Part 1: ', minCost);
 
 
 // pt.2
@@ -21,7 +33,7 @@ function fuelCost(from, to) {
   return dist * (dist + 1) / 2;
 }
 
-let minCost = +Infinity;
+minCost = +Infinity;
 // for each point between smallest and highest crab position
 for (let pos = input[0], last = input[input.length - 1]; pos <= last; pos++) {
   // sum up all fuel costs, remember only the smallest sum
