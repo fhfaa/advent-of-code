@@ -20,7 +20,7 @@ for (let i = 0; i < 256; i++) {
   input[8] = was0;
   input[6] += was0;
   if (i === 79) {
-    console.log('Part 1: ', Object.values(input).reduce((a, b) => a + +b, 0))
+    console.log('Part 1: ', Object.values(input).reduce((a, b) => a + +b, 0));
   }
 }
 // wow such bigint
