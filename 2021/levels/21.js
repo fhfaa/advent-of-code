@@ -7,10 +7,10 @@ input = `Player 1 starting position: 4
 Player 2 starting position: 8`;
 /* */
 
-input = input.split('\n');
+pos = input.split('\n').map(s => +s.split(' ').pop())
 
 // pt.1
-const part1 = 'TODO';
+const part1 = pos;
 console.log('Part 1: ', part1);
 
 

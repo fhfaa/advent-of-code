@@ -34,9 +34,19 @@ on x=-54112..-39298,y=-85059..-49293,z=-27449..7877
 on x=967..23432,y=45373..81175,z=27513..53682`;
 /* */
 
-input = input.split('\n');
+input = input.split('\n').map(s => {
+  const matches = s.match(/^o..? x=(-?\d+?)..(-?\d+?),y=(-?\d+?)..(-?\d+?),z=(-?\d+?)..(-?\d+?)$/);
+  matches[0] = matches[0][1] === 'n' ? 1 : 0;
+  return matches.map(Number);
+});
 
 // pt.1
+for (let row of input) {
+  const [on, x1, x2, y1, y2, z1, z2] = row;
+
+
+}
+
 const part1 = 'TODO';
 console.log('Part 1: ', part1);
 
