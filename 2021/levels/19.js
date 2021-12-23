@@ -163,7 +163,7 @@ input = input.split('\n\n').
 
 
 // pt.1
-const part1 = input;
+const part1 = 'TODO';
 console.log('Part 1: ', part1);
 
 
