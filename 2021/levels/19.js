@@ -2,16 +2,88 @@ const fs = require('fs');
 const lvl = __filename.replace(/.*?[\\\/]/g, '').replace(/[\D]/g, '');
 let input = fs.readFileSync(`${__dirname}/../input/${lvl}.txt`, 'utf8').replace(/\r/, '');
 
-/* */
+/* *
 input = `--- scanner 0 ---
-0,2
-4,1
-3,3
+-7,-7,7
+-2,-2,2
+-3,-3,3
+-2,-3,1
+5,6,-4
+8,0,7
 
---- scanner 1 ---
--1,-1
--5,0
--2,1`;
+--- scanner 0 ---
+7,-7,7
+2,-2,2
+3,-3,3
+2,-1,3
+-5,4,-6
+-8,-7,0
+
+--- scanner 0 ---
+-7,-7,-7
+-2,-2,-2
+-3,-3,-3
+-1,-3,-2
+4,6,5
+-7,0,8
+
+--- scanner 0 ---
+7,7,-7
+2,2,-2
+3,3,-3
+1,3,-2
+-4,-6,5
+7,0,8
+
+--- scanner 0 ---
+7,7,7
+2,2,2
+3,3,3
+3,1,2
+-6,-4,-5
+0,7,-8`;
+/* */
+
+/* *
+input = `--- scanner 0 ---
+-1,-1,1
+-2,-2,2
+-3,-3,3
+-2,-3,1
+5,6,-4
+8,0,7
+
+--- scanner 0 ---
+1,-1,1
+2,-2,2
+3,-3,3
+2,-1,3
+-5,4,-6
+-8,-7,0
+
+--- scanner 0 ---
+-1,-1,-1
+-2,-2,-2
+-3,-3,-3
+-1,-3,-2
+4,6,5
+-7,0,8
+
+--- scanner 0 ---
+1,1,-1
+2,2,-2
+3,3,-3
+1,3,-2
+-4,-6,5
+7,0,8
+
+--- scanner 0 ---
+1,1,1
+2,2,2
+3,3,3
+3,1,2
+-6,-4,-5
+0,7,-8`;
 /* */
 
 /* *
@@ -153,7 +225,69 @@ input = `--- scanner 0 ---
 30,-46,-14`;
 /* */
 
-input = input.split('\n\n').
+
+// Positions of all scanner centers (in scanner0 coords), for part2
+const scannerPositions = [[0, 0, 0]];
+let rotations = [
+  [ 1,  1, -1], [ 1, -1, -1],
+  [ 1,  1, -1], [-1, -1, -1],
+  [ 1,  1, -1], [ 1, -1, -1],
+  [ 1,  1, -1], [-1, -1, -1],
+];
+
+
+function alignScanners(scanner, scanner0) {
+  let i = 0;
+
+  maxDeltaOffset = null;
+  maxDelta = 0;
+  ret = null;
+
+  for (let direction = 0; direction < 6; direction++) {
+    for (const [rx, ry, rz] of rotations) {
+      const deltas = {};
+
+      for (const [bx, by, bz] of scanner) {
+        for (let [b0x, b0y, b0z] of scanner0) {
+          const key = `${bx  - b0x},${by - b0y},${bz - b0z}`;
+          deltas[key] = (deltas[key] || 0) + 1;
+        }
+      }
+
+      for (const deltaKey of Object.keys(deltas)) {
+
+        if (deltas[deltaKey] >= 3 && deltas[deltaKey] > maxDelta) {
+          maxDelta = deltas[deltaKey];
+          const [ox, oy, oz] = deltaKey.split(',').map(Number);
+          maxDeltaOffset = [ox, oy, oz];
+          ret = scanner.map(([px, py, pz]) => [px - ox, py - oy, pz - oz]);
+          
+          // 6 points overlapping --> good enough, return early
+          if (maxDelta >= 6) {
+            scannerPositions.push(maxDeltaOffset)
+            console.log('Found ', maxDelta, ' overlaps after', i, 'permutation(s)!', maxDeltaOffset);
+            return ret;
+          }
+        }
+      }
+
+      scanner = scanner.map(([x, y, z]) => [x * rx, y * ry, z * rz]);
+      i++;
+    }
+    scanner = scanner.map(([x, y, z]) => direction % 2 ? [x, z, y] : [z, y, x]);
+  }
+  if (maxDeltaOffset) {
+    scannerPositions.push(maxDeltaOffset)
+    console.log('Found ', maxDelta, ' overlaps after', i, 'permutation(s)!', maxDeltaOffset);
+    return ret;
+  }
+
+  return null;
+}
+
+
+// Parse scanners as coords as int[scanner][point][x/y/z]
+const scanners = input.split('\n\n').
   map(scanner => {
     return scanner.
       split('\n').
@@ -163,10 +297,47 @@ input = input.split('\n\n').
 
 
 // pt.1
-const part1 = 'TODO';
-console.log('Part 1: ', part1);
+console.time("Part 1");
+
+let scanner0 = scanners.shift();
+
+while (scanners.length) {
+  const nextScanner = scanners.shift();
+
+  // If next scanner can be flipped/rotated to match scanner0,
+  // add all new/unknown points from next scanner to scanner0.
+  const fixedScanner = alignScanners(nextScanner, scanner0);
+  if (fixedScanner) {
+    for (const [sx, sy, sz] of fixedScanner) {
+      if (!scanner0.find(([s0x, s0y, s0z]) => sx === s0x && sy === s0y && sz === s0z)) {
+        scanner0.push([sx, sy, sz]);
+      }
+    };
+
+  // If no match, new scanner only overlaps with another that we don't have yet
+  // Add it to the end of the list of scanners and retry later.
+  } else {
+    scanners.push(nextScanner);
+  }
+}
+
+console.timeEnd("Part 1");
+console.log('Part 1: ', scanner0.length);
+
 
 
 // pt.2
-const part2 = 'TODO';
-console.log('Part 2: ', part2);
+let manhattan = 0;
+for (const [sx, sy, sz] of scannerPositions) {
+  for (const [s0x, s0y, s0z] of scannerPositions) {
+    const tmp = (
+      Math.abs(sx > s0x ? sx - s0x : s0x - sx) +
+      Math.abs(sy > s0y ? sy - s0y : s0y - sy) +
+      Math.abs(sz > s0z ? sz - s0z : s0z - sz)
+    );
+    if (tmp > manhattan) {
+      manhattan = tmp;
+    }
+  }
+}
+console.log('Part 2: ', manhattan);
