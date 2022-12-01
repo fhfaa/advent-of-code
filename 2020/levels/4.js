@@ -1,6 +1,6 @@
 const fs = require('fs');
 const lvl = __filename.replace(/.*?[\\\/]/g, '').replace(/[\D]/g, '');
-let input = fs.readFileSync(`${__dirname}/../input/${lvl}.txt`, 'utf8').replace(/\r/, '');
+let input = fs.readFileSync(`${__dirname}/../input/${lvl}.txt`, 'utf8').replace(/\r/g, '');
 
 /*input = `ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
 byr:1937 iyr:2017 cid:147 hgt:183cm
