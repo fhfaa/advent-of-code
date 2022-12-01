@@ -2,10 +2,12 @@
   "name": "advent-of-code-2020",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/all.js",
+  "main": "dist/aoc.js",
   "author": "fhfaa",
   "license": "MIT",
-  "scripts": { 
+  "scripts": {
+    "all": "node dist/aoc.js",
+    "day": "node ./node_modules/nodemon/bin/nodemon.js --inspect ./dist/aoc.js",
     "tsc": "tsc",
     "watch": "tsc -w"
   },

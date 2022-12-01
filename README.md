@@ -1,16 +1,22 @@
-# Advent Of Code 2020 (+ some prev)
+# Advent Of Code 2022 (+ some prev)
 
-Dieses Jahr mal keine auf-Teufel-komm-raus-Einzeiler, aber trotzdem dezent zu kurz um lesbar zu sein (y).
-
+2021: Dieses Jahr mal keine auf-Teufel-komm-raus-Einzeiler, aber trotzdem dezent zu kurz um lesbar zu sein (y).
+2022: Bisschen TypeScript dazu
 
 ## Usage
 ```bash
 #setup
 $ npm i
+$ npm run tsc
 
-# all
-$ node .
+# all years
+$ npm run all
 
-# single
-$ node <YEAR>/levels/<DAY NUMBER>
+# 
+$ npm run all <year> (e.g. npm run 2021)
+
+# single (with restart & debugger)
+$ npm run watch
+# and 
+$ npm run day <year> <day> (e.g. npm run 2022 2)
 ```
