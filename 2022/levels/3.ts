@@ -3,7 +3,7 @@ import { Puzzle } from "../../puzzle";
 
 export const P = new Puzzle({
   year: 2022,
-  day: 0,
+  day: 3,
 
 
   part1: input => {
