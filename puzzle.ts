@@ -60,12 +60,12 @@ export class Puzzle {
         const result = test.part === 1 ? this.def.part1(testInput) : this.def.part2(testInput);
 
         if (result === test.expected) {
-          console.log(`✔️ Test "${test.name}" OK. Expected ${test.expected}.`);
+          console.log(`\x1b[1;32m✔️ Test "${test.name}" OK. Expected ${test.expected}.\x1b[0m`);
         } else {
-          console.log(`❌ Test "${test.name}" FAILED. Expected ${test.expected}.  Got: ${result}`);
+          console.log(`\x1b[1;31m❌ Test "${test.name}" FAILED. Expected ${test.expected}.  Got: ${result}\x1b[0m`);
         }
       } catch (ex: unknown) {
-        console.error(`☠️ Test "${test.name}" ERROR: `, ex);
+        console.error(`\x1b[1;31m☠️ Test "${test.name}" ERROR: `, ex, '\x1b[0m');
       }
     }
   }
