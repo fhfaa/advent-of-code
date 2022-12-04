@@ -6,11 +6,12 @@ export const P = new Puzzle({
   day: 0,
 
 
-  part1: input => {
+  part1: (input: string, isTest: boolean) => {
     return 'TODO';
   },
 
-  part2: input => {
+
+  part2: (input: string, isTest: boolean) => {
     return 'TODO';
   },
 

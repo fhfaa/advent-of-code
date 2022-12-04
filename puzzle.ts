@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'fs';
 const SUFFIX_PART2 = '_part2';
 
 export type PuzzleResult = string | number;
-export type PuzzleFn = (input: string) => PuzzleResult;
+export type PuzzleFn = (input: string, isTest: boolean) => PuzzleResult;
 
 export interface PuzzleResults {
   part1: PuzzleResult;
@@ -45,8 +45,8 @@ export class Puzzle {
   run(): PuzzleResults {
     const startTime = process.hrtime.bigint();
 
-    const part1 = this.def.part1(this.input1);
-    const part2 = this.def.part2(this.input2);
+    const part1 = this.def.part1(this.input1, false);
+    const part2 = this.def.part2(this.input2, false);
 
     const runtime = process.hrtime.bigint() - startTime;
     return { part1, part2, runtime }
@@ -57,7 +57,7 @@ export class Puzzle {
     for (const test of (this.def.tests || [])) {
       try {
         const testInput = this.getTestInput(test);
-        const result = test.part === 1 ? this.def.part1(testInput) : this.def.part2(testInput);
+        const result = test.part === 1 ? this.def.part1(testInput, true) : this.def.part2(testInput, true);
 
         if (result === test.expected) {
           console.log(`\x1b[1;32m✔️ Test "${test.name}" OK. Expected ${test.expected}.\x1b[0m`);

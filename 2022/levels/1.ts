@@ -16,13 +16,13 @@ export const P = new Puzzle({
   day: 1,
 
 
-  part1: input => {
+  part1: (input, isTest = false) => {
     const elves = getElves(input);
     return Math.max(...elves);
   },
 
   
-  part2: input => {
+  part2: (input, isTest = false) => {
     const elves = getElves(input);
     return elves.
       sort((a, b) => b - a).

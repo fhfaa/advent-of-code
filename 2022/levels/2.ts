@@ -6,7 +6,7 @@ export const P = new Puzzle({
   day: 2,
 
 
-  part1: input => {
+  part1: (input, isTest = false) => {
     // Score: 0 lose, 3 draw, 6 win + your hand (1 rock, 2 paper, 3 scissors)
     return input.
       split('\n').
@@ -31,7 +31,7 @@ export const P = new Puzzle({
   },
 
 
-  part2: input => {
+  part2: (input, isTest = false) => {
     return input.
       split('\n').
       reduce((score: number, row: string) => {
