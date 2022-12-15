@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'fs';
 const SUFFIX_PART2 = '_part2';
 
 export type PuzzleResult = string | number;
-export type PuzzleFn = (input: string, isTest: boolean) => PuzzleResult;
+export type PuzzleFn = (input: string, isTest: boolean, params?: object) => PuzzleResult;
 
 export interface PuzzleResults {
   part1: PuzzleResult;
@@ -17,6 +17,7 @@ export interface PuzzleTest {
   expected: PuzzleResult;
   input?: string;
   inputFile?: string;
+  params?: any;
 }
 
 export interface PuzzleDefinition {
@@ -57,7 +58,9 @@ export class Puzzle {
     for (const test of (this.def.tests || [])) {
       try {
         const testInput = this.getTestInput(test);
-        const result = test.part === 1 ? this.def.part1(testInput, true) : this.def.part2(testInput, true);
+        const result = test.part === 1 ?
+          this.def.part1(testInput, true, test.params) :
+          this.def.part2(testInput, true, test.params);
 
         if (result === test.expected) {
           console.log(`\x1b[1;32m✔️ Test "${test.name}" OK. Expected ${test.expected}.\x1b[0m`);
@@ -107,10 +110,10 @@ export class Puzzle {
   }
 
 
-  public static async loadAndExec(year: number, day: number, opts: { runTests?: boolean } = {}): Promise<PuzzleResult> {
+  public static async loadAndExec(year: number, day: number, opts: { runTests?: boolean } = {}): Promise<PuzzleResults> {
     const filename = __dirname + `/${year}/levels/${day}`;
     
-    const puzzle = (await import(filename)).P;
+    const puzzle: Puzzle = (await import(filename)).P;
     if (opts.runTests) {
       puzzle.runTests();
     }
