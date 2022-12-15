@@ -19,8 +19,7 @@ type CaveInfo = {
   caveMap: CaveMap;
   xLen: number;
   yMax: number; 
-  spawn: [number, number];
-  sandCountPt2: number;
+  spawn: [number, number]; // with fixed coords for pt.1
 }
 
 
