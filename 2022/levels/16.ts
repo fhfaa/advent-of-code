@@ -22,8 +22,6 @@ export const P = new Puzzle({
 
 
   part1: (input: string, isTest: boolean) => {
-    if (!isTest) { return 'WIP'; }
-
     const START = 'AA';
     const MAXTIME = 30;
     
