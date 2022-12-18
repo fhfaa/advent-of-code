@@ -1,7 +1,17 @@
 import { Puzzle } from "../../puzzle";
 
+function manhattan(x1: number, y1: number, x2: number, y2: number): number {
+  return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+}
+
 type Sensor = [number, number, number, number];
 type XRange = { from: number, to: number };
+
+type Sensor2 = {
+  x: number;
+  y: number;
+  range: number
+};
 
 /* ************************************************************************* */
 /* ************************************************************************* */
@@ -13,7 +23,7 @@ export const P = new Puzzle({
 
   /* ************************************************************************* */
 
-  part1: (input: string, isTest: boolean, params: any = { Y: 2000000 }) => {
+  part1: (input: string, isTest: boolean, params: any = { Y: 2_000_000 }) => {
   const Y = params.Y;
   const beaconXs: number[] = [];
 
@@ -31,7 +41,7 @@ export const P = new Puzzle({
           beaconXs.push(beaconX);
         }
 
-        const sensorRange = Math.abs(x - beaconX) + Math.abs(y - beaconY);
+        const sensorRange = manhattan(x, y, beaconX, beaconY);
         
         // Filter out sensors that are too far away to be relevant 
         // (Manhattan distance to closest beacon is smaller than the delta in Y coord)
@@ -79,9 +89,49 @@ export const P = new Puzzle({
 
   /* ************************************************************************* */
 
-  part2: (input: string, isTest: boolean) => {
-    if (!isTest) { return; }
-    return 'WIP';
+  part2: (input: string, isTest: boolean, params: any = { MAX_XY: 4_000_000 }) => {
+    const MIN_XY = 0;
+    const MAX_XY = params.MAX_XY;
+
+    const sensors = input.
+      split('\n').
+      map(line => line.
+        replace(/[^0-9-]+/g, ',').
+        split(',').
+        slice(1).
+        map(parseFloat)
+      ).
+      map(([x, y, beaconX, beaconY]: Sensor): Sensor2 => ({
+          x,
+          y,
+          range: manhattan(x, y, beaconX, beaconY)
+        })
+      );
+
+    const XY_FLIP = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
+
+    // For each sensor
+    for (let sensor of sensors) {
+      // Walk around the sensor just outside of its range
+      for (let dx = 0, dxMax = sensor.range + 1; dx <= dxMax; dx++) {
+        // Walk all edges at the same time (1 move, flipped in 4 directions)
+        for (let [xFlip, yFlip] of XY_FLIP) {
+          const dy = sensor.range + 1 - dx;
+          const testX = sensor.x + dx * xFlip;
+          const testY = sensor.y + dy * yFlip;
+
+          // Then check if these candidate points are within the constraints...
+          if (testX >= MIN_XY && testY >= MIN_XY &&
+              testX <= MAX_XY && testY <= MAX_XY &&
+              // ... and not in range of any sensor
+              sensors.every(otherSensor => manhattan(otherSensor.x, otherSensor.y, testX, testY) > otherSensor.range)) {
+            
+            // Only true for one point. Missing beacon found!
+            return testX * 4000000 + testY
+          }
+        }
+      }
+    }
   },
 
   /* ************************************************************************* */
@@ -100,6 +150,11 @@ export const P = new Puzzle({
     name: 'Part 2 example',
     part: 2,
     expected: 56000011,
-    inputFile: 'example'
+    inputFile: 'example',
+    params: { MAX_XY: 20 }
+  }, {
+    name: 'Part 2 my input', 
+    part: 2,
+    expected: 10553942650264,
   }]
 });
