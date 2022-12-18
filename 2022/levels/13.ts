@@ -83,14 +83,14 @@ export const P = new Puzzle({
     expected: 13,
     inputFile: 'example',
   }, {
+    name: 'Part 1 my input',
+    part: 1,
+    expected: 5760,
+  }, {
     name: 'Part 2 example',
     part: 2,
     expected: 140,
     inputFile: 'example'
-  }, {
-    name: 'Part 1 my input',
-    part: 1,
-    expected: 5760,
   }, {
     name: 'Part 2 my input',
     part: 2,

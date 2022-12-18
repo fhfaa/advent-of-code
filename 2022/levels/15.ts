@@ -93,13 +93,13 @@ export const P = new Puzzle({
     inputFile: 'example',
     params: { Y: 10 }
   }, {
+    name: 'Part 1 my input', 
+    part: 1,
+    expected: 5108096,
+  }, {
     name: 'Part 2 example',
     part: 2,
     expected: 56000011,
     inputFile: 'example'
-  }, {
-    name: 'Part 1 my input', 
-    part: 1,
-    expected: 5108096,
   }]
 });
