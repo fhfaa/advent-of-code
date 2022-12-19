@@ -41,10 +41,16 @@ function checkOrder(left: number | List, right: number | List): number {
 }
 
 
+/* ************************************************************************* */
+/* ************************************************************************* */
+/* ************************************************************************* */
+
+
 export const P = new Puzzle({
   year: 2022,
   day: 13,
 
+  /* ************************************************************************* */
 
   part1: (input: string, isTest: boolean) => {
     const pairs = input.
@@ -64,6 +70,7 @@ export const P = new Puzzle({
     }, 0);
   },
 
+  /* ************************************************************************* */
 
   part2: (input: string, isTest: boolean) => {
     const dividers = [ [[2]], [[6]] ];
@@ -76,6 +83,7 @@ export const P = new Puzzle({
     return (packets.indexOf(dividers[0]) + 1) * (packets.indexOf(dividers[1]) + 1);
   },
 
+  /* ************************************************************************* */
 
   tests: [{
     name: 'Part 1 example',

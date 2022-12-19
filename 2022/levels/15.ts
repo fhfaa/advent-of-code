@@ -1,8 +1,5 @@
 import { Puzzle } from "../../puzzle";
 
-function manhattan(x1: number, y1: number, x2: number, y2: number): number {
-  return Math.abs(x1 - x2) + Math.abs(y1 - y2);
-}
 
 type Sensor = [number, number, number, number];
 type XRange = { from: number, to: number };
@@ -14,8 +11,16 @@ type Sensor2 = {
 };
 
 /* ************************************************************************* */
+
+function manhattan(x1: number, y1: number, x2: number, y2: number): number {
+  return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+}
+
+
 /* ************************************************************************* */
 /* ************************************************************************* */
+/* ************************************************************************* */
+
 
 export const P = new Puzzle({
   year: 2022,

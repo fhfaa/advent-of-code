@@ -8,7 +8,7 @@ export type PuzzleFn = (input: string, isTest: boolean, params?: object) => Puzz
 export interface PuzzleResults {
   part1: PuzzleResult;
   part2: PuzzleResult;
-  runtime?: number | bigint;
+  runtime?: bigint;
 }
 
 export interface PuzzleTest {
@@ -121,6 +121,7 @@ export class Puzzle {
     const results = puzzle.run();
     console.log('Part 1: ', results.part1);
     console.log('Part 2: ', results.part2);
+    // console.log((results.runtime / 1_000_000n) + 'ms');
     console.log('');
     return results;
   }
