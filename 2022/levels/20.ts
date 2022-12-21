@@ -34,10 +34,16 @@ function decode(order: number[], rounds = 1, decryptionKey = 1): number {
 };
 
 
+/* ************************************************************************* */
+/* ************************************************************************* */
+/* ************************************************************************* */
+
+
 export const P = new Puzzle({
   year: 2022,
   day: 20,
 
+  /* ************************************************************************* */
 
   part1: (input: string, isTest: boolean) => {
     let nums = input.split('\n').map(Number);
@@ -45,6 +51,7 @@ export const P = new Puzzle({
     return decode(nums, 1);
   },
 
+  /* ************************************************************************* */
 
   part2: (input: string, isTest: boolean) => {
     let nums = input.split('\n').map(Number);
@@ -53,6 +60,7 @@ export const P = new Puzzle({
     return decode(nums, 10, DECRYPTION_KEY);
   },
 
+  /* ************************************************************************* */
 
   tests: [{
     name: 'Part 1 example',
