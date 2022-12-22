@@ -19,9 +19,19 @@ type Snapshot = {
   bots: Materials;
   minute: number;
 }
-type Material = 'ore' | 'clay' | 'obsidian'  | 'geode';
-
+type Material = 'ore' | 'clay' | 'obsidian' | 'geode';
 const MAT_NAMES: Material[] = ['ore', 'clay', 'obsidian', 'geode'];
+
+type Bots2 = {
+  ore: number;
+  clay: number;
+  obsidian: number;
+}
+type Snapshot2 = {
+  mats: Materials;
+  bots: Bots2;
+  minutesLeft: number;
+}
 
 /* ************************************************************************* */
 
@@ -46,23 +56,24 @@ function parseBlueprints(input: string): Blueprint[] {
 
 function clone(sim: Snapshot) {
   return {
-    mats: {...sim.mats},
-    bots: {...sim.bots},
+    mats: { ...sim.mats },
+    bots: { ...sim.bots },
     minute: sim.minute,
   }
 }
 
-function hash(sim: Snapshot) {
+function hashSLOW(sim: Snapshot) {
   return `${sim.minute},` +
     `${sim.bots.ore},${sim.bots.clay},${sim.bots.obsidian},${sim.bots.geode},` +
     `${sim.mats.ore},${sim.mats.clay},${sim.mats.obsidian},${sim.mats.geode}`;
 }
 
-function solve(blueprints: Blueprint[], MAX_MINUTES: number) {
+
+function solveSLOW(blueprints: Blueprint[], MAX_MINUTES: number) {
   return blueprints.map((costs: Blueprint) => {
     let maxGeodes = 0;
 
-    // Maximum ore cost of all other robots
+    // Maximum ore cost of all other bots
     const maxOreNeeded = Math.max(costs.clay_ore, costs.obs_ore, costs.geode_ore);
 
     const queue: Snapshot[] = [{
@@ -70,7 +81,7 @@ function solve(blueprints: Blueprint[], MAX_MINUTES: number) {
       mats: { ore: 0, clay: 0, obsidian: 0, geode: 0 },
       minute: 0
     }];
-    
+
     const states: any = {};
 
     while (queue.length) {
@@ -78,10 +89,10 @@ function solve(blueprints: Blueprint[], MAX_MINUTES: number) {
 
       sim.minute++;
 
-      if ((states[hash(sim)] ?? 69) <= sim.minute) {
+      if ((states[hashSLOW(sim)] ?? 69) <= sim.minute) {
         continue;
       }
-      states[hash(sim)] = sim.minute;
+      states[hashSLOW(sim)] = sim.minute;
 
       // See what we can build (unless we're in the last minute)
       // Since we can only build one bot per minute, we don't need
@@ -110,7 +121,7 @@ function solve(blueprints: Blueprint[], MAX_MINUTES: number) {
           }
           if (
             sim.mats.ore >= costs.ore_ore &&
-            sim.bots.ore < maxOreNeeded) { 
+            sim.bots.ore < maxOreNeeded) {
             canBuild.push('ore');
           }
         }
@@ -163,6 +174,146 @@ function solve(blueprints: Blueprint[], MAX_MINUTES: number) {
   });
 }
 
+/* ************************************************************************* */
+
+const solve = (blueprints: Blueprint[], MAX_MINUTES: number) => {
+  // Prepare factorials of 0..MAX_MINUTES for abort condition
+  const factorials: {[key: string]: number} = new Array(MAX_MINUTES).fill(0).
+    reduce((memo, _, idx) => {
+      memo[idx + 2] = memo[idx + 1] * (idx + 2);
+      return memo;
+    }, {0: 1, 1: 1});
+
+  return blueprints.map(blueprint => {
+    let maxGeodes = 0;
+    
+    const maxOreNeeded = Math.max(
+      blueprint.ore_ore,
+      blueprint.clay_ore,
+      blueprint.obs_ore,
+      blueprint.geode_ore
+    );
+
+    const queue: Snapshot2[] = [{
+      minutesLeft: MAX_MINUTES,
+      bots: { ore: 1, clay: 0, obsidian: 0 },
+      mats: { ore: 0, clay: 0, obsidian: 0, geode: 0 }
+    }];
+
+    while (queue.length) {
+      const { minutesLeft, bots, mats: { ore, clay, obsidian, geode }} = queue.pop();
+
+      if (geode > maxGeodes) {
+        maxGeodes = geode;
+      }
+      if (minutesLeft <= 0) {
+        continue;
+      } 
+      // factorial(minutesLeft - 1) is the number of geodes we could gain if we built a geode 
+      // bot every minute from now until the end. If we're that far from the record, abort,
+      // because we won't get anywhere with this snapshot.
+      if (maxGeodes - geode > factorials[minutesLeft - 1]) {
+        continue;
+      }
+
+      
+      // Check when we can build the next geode bot (if we have a obsidian bot)
+      if (bots.obsidian > 0) {
+        const readyNow = blueprint.geode_ore <= ore && blueprint.geode_obs <= obsidian;
+        const duration = readyNow ? 1 : 1 + Math.max(
+          Math.ceil((blueprint.geode_ore - ore) / bots.ore),
+          Math.ceil((blueprint.geode_obs - obsidian) / bots.obsidian)
+        );
+        const newTimeLeft = minutesLeft - duration;
+
+        queue.push({
+          minutesLeft: newTimeLeft,
+          bots: {...bots},
+          mats: {
+            ore: ore + (duration * bots.ore) - blueprint.geode_ore,
+            clay: clay + (duration * bots.clay),
+            obsidian: obsidian + (duration * bots.obsidian) - blueprint.geode_obs,
+            geode: geode + newTimeLeft
+          }
+        });
+
+        // Building a geode bot is the best possible move. Don't bother with the rest.
+        if (readyNow) {
+          continue;
+        }
+      }
+
+      // Check when we can build the next obsidian bot (if we have a clay bot)
+      if (bots.clay > 0) {
+        const readyNow = blueprint.obs_ore <= ore && blueprint.obs_clay <= clay;
+        const duration = readyNow ? 1 : 1 + Math.max(
+          Math.ceil((blueprint.obs_ore - ore) / bots.ore),
+          Math.ceil((blueprint.obs_clay - clay) / bots.clay)
+        );
+        const newTimeLeft = minutesLeft - duration;
+
+        // Only makes sense if we can build geode bot afterwards (+1 step)
+        if (newTimeLeft > 2) {
+          queue.push({
+            minutesLeft: newTimeLeft,
+            bots: {...bots, ...{obsidian: bots.obsidian + 1}},
+            mats: {
+              ore: ore + (duration * bots.ore) - blueprint.obs_ore,
+              clay: clay + (duration * bots.clay) - blueprint.obs_clay,
+              obsidian: obsidian + (duration * bots.obsidian),
+              geode
+            }
+          });
+        }
+      }
+
+      // Check when we can build the next clay bot (if it makes sense to)
+      if (bots.clay < blueprint.obs_clay) {
+        const readyNow = blueprint.clay_ore <= ore;
+        const duration = readyNow ? 1 : 1 + Math.ceil((blueprint.clay_ore - ore) / bots.ore);
+        const newTimeLeft = minutesLeft - duration;
+
+        // Only makes sense if we can build obsidian + geode bots afterwards (+2 steps)
+        if (newTimeLeft > 3) {
+          queue.push({
+            minutesLeft: newTimeLeft,
+            bots: {...bots, ...{clay: bots.clay + 1}},
+            mats: {
+              ore: ore + (duration * bots.ore) - blueprint.clay_ore,
+              clay: clay + (duration * bots.clay),
+              obsidian: obsidian + (duration * bots.obsidian),
+              geode
+            }
+          });
+        }
+      }
+
+      // Check when we can build the next ore bot (if it makes sense to)
+      if (bots.ore < maxOreNeeded) {
+        const readyNow = blueprint.ore_ore <= ore;
+        const duration = readyNow ? 1 : 1 + Math.ceil((blueprint.ore_ore - ore) / bots.ore);
+        const newTimeLeft = minutesLeft - duration;
+
+        // Only makes sense if we can build obsidian + geode bots afterwards (+2 steps)
+        if (newTimeLeft > 3) {
+          queue.push({
+            minutesLeft: newTimeLeft,
+            bots: {...bots, ...{ore: bots.ore + 1}},
+            mats: {
+              ore: ore + (duration * bots.ore) - blueprint.ore_ore,
+              clay: clay + (duration * bots.clay),
+              obsidian: obsidian + (duration * bots.obsidian),
+              geode
+            }
+          });
+        }
+      }
+    };
+    
+    return maxGeodes;
+  });
+};
+
 
 /* ************************************************************************* */
 /* ************************************************************************* */
@@ -189,7 +340,7 @@ export const P = new Puzzle({
     return scores.reduce((a, b) => a * b, 1);
   },
 
-/* ************************************************************************* */
+  /* ************************************************************************* */
 
   tests: [{
     name: 'Part 1 example',
