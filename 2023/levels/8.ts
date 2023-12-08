@@ -71,6 +71,10 @@ export const P = new Puzzle({
     // Calculate the least common multiple of the path lengths
     const gcd = (a: number, b: number): number => b ? gcd(b, a % b) : a;
     return results.reduce((a, b) => a * b / gcd(a, b));
+
+    // Wait... this wasn't supposed to work.
+    // We never even checked if anything looped at all, which is a prerequisite for LCM to work.
+    // Oh well, task failed successfully...
   },
 
   /* ************************************************************************* */
