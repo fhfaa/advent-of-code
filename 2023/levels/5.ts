@@ -1,7 +1,10 @@
 import { Puzzle } from "../../puzzle";
 
+// NOTE: Input is dest/src/length; our format is src/length/dest
 type Range = [number, number, number];
-const DST = 0, SRC = 1, LEN = 2;
+type SeedRange = [number, number];
+const START = 0, LENGTH = 1, DEST = 2;
+
 
 const parseInput = (input: string): { seeds: number[], mappings: Range[][] } => {
   const parts = input.substring(7).
@@ -18,22 +21,78 @@ const parseInput = (input: string): { seeds: number[], mappings: Range[][] } => 
         map((line: string): Range => line.
           split(' ').
           map(parseFloat) as Range
-        ).sort((a,b) => a[1] < b[1] ? -1 : 1)
+        ).
+        // Change order from dest/src/length to src/length/dest,
+        // so we can index both Range and SeedRange with the same constants
+        map(r => [r[1], r[2], r[0]] as Range)
       )
   };
 }
 
+
+const mapRanges = (seedRanges: SeedRange[], mapRanges: Range[]) => {
+  let processedRanges: SeedRange[] = [];
+
+  nextSeedRange: while (seedRanges.length) {
+    const seedRange = seedRanges.pop();
+    const seedEnd = seedRange[START] + seedRange[LENGTH];
+
+    for (let mapRange of mapRanges) {
+      const mapEnd = mapRange[START] + mapRange[LENGTH];
+
+      // Entire mapRange is contained in seedRange
+      // Map offsets for intersection, and check the rest again later
+      // (pretend the rest is two separate seedRanges)
+      if (seedRange[START] < mapRange[START] && seedEnd > mapEnd) {
+        seedRanges.push([seedRange[START], mapRange[START] - seedRange[START]]);
+        processedRanges.push([mapRange[DEST], mapEnd - mapRange[START]]); 
+        seedRanges.push([mapEnd, seedEnd - mapEnd]);
+        continue nextSeedRange;
+
+      // End of seedRange intersects with start of mapRange
+      // Map offsets for the intersection and check the rest again later
+      // (pretend the rest is a separate seedRange)
+      } else if (seedRange[START] < mapRange[START] && seedEnd > mapRange[START]) {
+        seedRanges.push([seedRange[START], mapRange[START] - seedRange[START]]);
+        processedRanges.push([mapRange[DEST], seedEnd - mapRange[START]]);
+        continue nextSeedRange;
+
+      // Start of seedRange intersects with end of mapRange
+      // Map offsets for the intersection and check the rest again later
+      // (pretend the rest is a separate seedRange)
+      } else if (seedRange[START] >= mapRange[START] && seedRange[START] < mapEnd && seedEnd > mapEnd) {
+        processedRanges.push([seedRange[START] - mapRange[START] + mapRange[DEST], mapEnd - seedRange[START] - 1]);
+        seedRanges.push([mapEnd, seedEnd - mapEnd]);
+        continue nextSeedRange;
+      
+      // Entire seedRange is contained in mapRange
+      // Map offsets for the intersection
+      } else if (seedRange[START] >= mapRange[START] && seedEnd <= mapEnd) {
+        processedRanges.push([seedRange[START] - mapRange[START] + mapRange[DEST], seedRange[LENGTH]]);
+        continue nextSeedRange;
+      }
+      
+      // ELSE: No intersection between seedRange and mapRange - check next mapRange
+    }
+    
+    // This seedRange didn't intersect with any of the mapRanges, so it remains unchanged for this mapping
+    processedRanges.push(seedRange);
+  }
+
+  return processedRanges;
+};
+
+
 /* ************************************************************************* */
 /* ************************************************************************* */
 /* ************************************************************************* */
+
 
 export const P = new Puzzle({
   year: 2023,
   day: 5,
 
   /* ************************************************************************* */
-
-  
 
   part1: (input: string, isTest: boolean) => {
     const { seeds, mappings } = parseInput(input);
@@ -43,14 +102,14 @@ export const P = new Puzzle({
       // For each seed
       ...seeds.map(seed => {
         // Traverse all mappings
-      return mappings.reduce((val: number, mapRanges: Range[]) => {
-        // If there is a range that contains our source val, map and return. Otherwise return src val.
-        const matchingRange = mapRanges.
-          find((range) => val >= range[SRC] && val < range[SRC] + range[LEN]);
-        return matchingRange ? 
-          matchingRange[DST] + (val - matchingRange[SRC]) :
-          val;
-      }, seed);
+        return mappings.reduce((val: number, mapRanges: Range[]) => {
+          // If there is a range that contains our source val, map and return. Otherwise return src val.
+          const matchingRange = mapRanges.
+            find((range) => val >= range[START] && val < range[START] + range[LENGTH]);
+          return matchingRange ?
+            matchingRange[DEST] + (val - matchingRange[START]) :
+            val;
+        }, seed);
       })
     );
   },
@@ -60,29 +119,20 @@ export const P = new Puzzle({
   part2: (input: string, isTest: boolean) => {
     const { seeds, mappings } = parseInput(input);
 
-    let minLocation = +Infinity;
-    // For every second seed
-    for (let i = 0, len = seeds.length; i < len; i += 2) {
-      // Use the next (skipped) seed number as the length of the range
-      const seed = seeds[i];
-      const rangeLen = seeds[i + 1];
-      // Walk this range, starting from the seed
-      for (let d = 0; d < rangeLen; d += 1) {
-        const location = mappings.reduce((val: number, mapRanges: Range[]) => {
-          // If there is a range that contains our source val, map and return. Otherwise return src val.
-          // console.log('num matchingRanges: ', mapRanges.filter((range) => val >= range[SRC] && val < (range[SRC] + range[LEN])).length)
-          const matchingRange = mapRanges.
-            find((range) => val >= range[SRC] && val < range[SRC] + range[LEN]);
+    let min = +Infinity;
+    // For each range of seeds
+    for (let i = 0; i < seeds.length; i += 2) {
+      const seedRanges: SeedRange[] = [[seeds[i], seeds[i + 1]]];
 
-          return matchingRange ? 
-            matchingRange[DST] + (val - matchingRange[SRC]) :
-            val;
-        }, seed + d);
-        minLocation = Math.min(minLocation, location);
-      }
+      // Map the seed ranges to location ranges, take the lowest location
+      // from each range, and find the minimum across all seed ranges.
+      const rangeMinimums = mappings.
+        reduce(mapRanges, seedRanges).
+        map(s => s[START]);
+
+      min = Math.min(min, ...rangeMinimums);
     }
-    console.log(minLocation);
-    return minLocation;
+    return min;
   },
 
   /* ************************************************************************* */
