@@ -180,32 +180,32 @@ export const P = new Puzzle({
           map((chr, x) => pipeCoords[`${x},${y}`] ? chr : 0)
         );
       
-      // Find the min/max points that the pipe occupies and only check
-      // those points. The ones outside can't be inside (duh).
-      const { xmin, xmax, ymin, ymax } = getConstraints(pipes);
-      
-      let numInside = 0;
-      for (let y = ymin; y <= ymax; y++) {
-        let inside = false;
+    // Find the min/max points that the pipe occupies and only check
+    // those points. The ones outside can't be inside (duh).
+    const { xmin, xmax, ymin, ymax } = getConstraints(pipes);
+    
+    let numInside = 0;
+    for (let y = ymin; y <= ymax; y++) {
+      let inside = false;
 
-        for (let x = xmin; x <= xmax; x++) {
-          // A pipe that belongs to the loop.
-          // Only count tiles that go up (L, | and J -- but not F and 7)!
-          // If we're past an odd number of these we're inside.
-          if (map[y][x]) {
-            if (map[y][x] & U) {
-              inside = !inside;
-            }
-          
-          // We hit a non-loop tile. If we're currently inside
-          // the loop as per the check above, count it (adds 0 if false)
-          } else {
-            numInside += +inside;
+      for (let x = xmin; x <= xmax; x++) {
+        // A pipe that belongs to the loop.
+        // Only count tiles that go up (L, | and J -- but not F and 7)!
+        // If we're past an odd number of these we're inside.
+        if (map[y][x]) {
+          if (map[y][x] & U) {
+            inside = !inside;
           }
+        
+        // We hit a non-loop tile. If we're currently inside
+        // the loop as per the check above, count it (adds 0 if false)
+        } else {
+          numInside += +inside;
         }
       }
+    }
 
-      return numInside;
+    return numInside;
   },
 
   /* ************************************************************************* */
