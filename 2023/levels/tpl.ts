@@ -24,15 +24,23 @@ export const P = new Puzzle({
 
   /* ************************************************************************* */
 
-  tests: [/* *{
+  tests: [{
     name: 'Part 1 example',
     part: 1,
-    expected: 24000,
+    expected: 1,
     inputFile: 'example',
   }, /* *{
-    name: 'Part 2 example',
+    name: 'Part 2 my input',
     part: 2,
-    expected: 45000,
-    inputFile: 'example'
+    expected: 'TODO',
+  }/* *{
+    name: 'Part 1 example',
+    part: 2,
+    expected: 1,
+    inputFile: 'example',
+  }, /* *{
+    name: 'Part 2 my input',
+    part: 2,
+    expected: 'TODO',
   }/* */]
 });
