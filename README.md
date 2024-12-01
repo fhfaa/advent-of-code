@@ -12,11 +12,11 @@ $ npm run tsc
 # all years
 $ npm run all
 
-# 
-$ npm run all <year> (e.g. npm run 2021)
+# one year, e.g.
+$ npm run all 2021
 
 # single (with restart & debugger)
 $ npm run watch
 # and 
-$ npm run day <year> <day> (e.g. npm run 2022 2)
+$ npm run day <year> <day> (e.g. npm run day 2022 2)
 ```
