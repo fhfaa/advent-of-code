@@ -1,0 +1,141 @@
+--------------
+--   2021   --
+--------------
+
+ -- Level 1 -- 
+Part 1:  1233
+Part 2:  1275
+
+ -- Level 2 -- 
+Part 1:  1383564
+Part 2:  1488311643
+
+ -- Level 3 -- 
+Part 1:  738234
+Part 2:  3969126
+
+ -- Level 4 -- 
+Part 1:  25023
+Part 2:  2634
+
+ -- Level 5 -- 
+Part 1:  3990
+Part 2:  21305
+
+ -- Level 6 -- 
+Part 1:  374927
+Part 2:  1687617803407
+
+ -- Level 7 -- 
+Part 1:  329389
+Part 2:  86397080
+
+ -- Level 8 -- 
+Part 1:  449
+Part 2:  968175
+
+ -- Level 9 -- 
+Part 1:  545
+Part 2:  950600
+
+ -- Level 10 -- 
+Part 1:  343863
+Part 2:  2924734236
+
+ -- Level 11 -- 
+Part 1:  1644
+Part 2:  229
+
+ -- Level 12 -- 
+Part 1:  3450
+Part 2:  96528
+
+ -- Level 13 -- 
+Part 1:  753
+Part 2: 
+#  # #### #    #### #  #   ## ###  #  # 
+#  #    # #    #    #  #    # #  # # #  
+####   #  #    ###  ####    # #  # ##   
+#  #  #   #    #    #  #    # ###  # #  
+#  # #    #    #    #  # #  # # #  # #  
+#  # #### #### #### #  #  ##  #  # #  # 
+
+ -- Level 14 -- 
+Part 1:  5656
+Part 2:  12271437788530
+
+ -- Level 15 -- 
+Part 1:  720
+Part 2:  3025
+
+ -- Level 16 -- 
+Part 1:  913
+Part 2:  1510977819698
+
+ -- Level 17 -- 
+Part 1:  5253
+Part 2:  1770
+
+ -- Level 18 -- 
+Part 1:  3806
+Part 2:  4727
+
+ -- Level 19 -- 
+Found  12  overlaps after 37 permutation(s)! [ 159, -16, 1033 ]
+Found  6  overlaps after 26 permutation(s)! [ -1178, -1261, -97 ]
+Found  18  overlaps after 6 permutation(s)! [ 143, -1139, -164 ]
+Found  15  overlaps after 47 permutation(s)! [ -1038, 33, 1182 ]
+Found  18  overlaps after 12 permutation(s)! [ -1150, -1250, 1171 ]
+Found  21  overlaps after 42 permutation(s)! [ -1166, -15, -136 ]
+Found  12  overlaps after 31 permutation(s)! [ -1187, -1131, 2292 ]
+Found  12  overlaps after 28 permutation(s)! [ 99, -1174, -1360 ]
+Found  9  overlaps after 41 permutation(s)! [ -2348, 78, 2260 ]
+Found  6  overlaps after 38 permutation(s)! [ 125, -1242, 3598 ]
+Found  12  overlaps after 32 permutation(s)! [ 51, 1268, 1224 ]
+Found  18  overlaps after 15 permutation(s)! [ -2313, 125, 1048 ]
+Found  6  overlaps after 32 permutation(s)! [ -1039, -1165, -2504 ]
+Found  15  overlaps after 6 permutation(s)! [ -2324, -1138, 11 ]
+Found  21  overlaps after 10 permutation(s)! [ -2229, -48, -165 ]
+Found  18  overlaps after 10 permutation(s)! [ 119, 110, -1272 ]
+Found  12  overlaps after 25 permutation(s)! [ 1356, 126, 1228 ]
+Found  6  overlaps after 35 permutation(s)! [ 1216, -2449, -88 ]
+Found  12  overlaps after 28 permutation(s)! [ 1267, -3550, 2 ]
+Found  21  overlaps after 26 permutation(s)! [ -1067, 74, 2296 ]
+Found  18  overlaps after 6 permutation(s)! [ -1126, 1170, 1064 ]
+Found  18  overlaps after 9 permutation(s)! [ 6, -2364, -107 ]
+Found  18  overlaps after 5 permutation(s)! [ -1085, -1152, 3557 ]
+Found  12  overlaps after 44 permutation(s)! [ 2442, 25, 1144 ]
+Found  18  overlaps after 35 permutation(s)! [ 138, -1224, -2511 ]
+Found  6  overlaps after 25 permutation(s)! [ 3778, 1335, 1097 ]
+Found  6  overlaps after 22 permutation(s)! [ 1301, -1084, -3699 ]
+Found  18  overlaps after 10 permutation(s)! [ 1287, -1238, -2532 ]
+Found  18  overlaps after 16 permutation(s)! [ 2476, 1308, 1113 ]
+Found  18  overlaps after 21 permutation(s)! [ 68, -3627, -142 ]
+Found  12  overlaps after 19 permutation(s)! [ -1178, -2358, -2560 ]
+Found  18  overlaps after 3 permutation(s)! [ 3697, 50, 1210 ]
+Part 1: 9.583s
+Part 1:  405
+Part 2:  12306
+
+ -- Level 20 -- 
+Part 1:  5786
+Part 2:  16757
+
+ -- Level 21 -- 
+Part 1:  888735
+Part 2:  647608359455719
+
+ -- Level 22 -- 
+Part 1:  TODO
+Part 2:  TODO
+
+ -- Level 23 -- 
+Part 1:  TODO
+Part 2:  TODO
+
+ -- Level 24 -- 
+Part 1:  91147191161265
+Part 2:  51147191161261
+
+ -- Level 25 -- 
+Part 1:  534

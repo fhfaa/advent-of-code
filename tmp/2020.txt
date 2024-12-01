@@ -1,0 +1,102 @@
+--------------
+--   2020   --
+--------------
+
+ -- Level 1 -- 
+Part 1:  138379
+Part 2:  85491920
+
+ -- Level 2 -- 
+Part 1:  538
+Part 2:  489
+
+ -- Level 3 -- 
+Part 1:  223
+Part 2:  3517401300
+
+ -- Level 4 -- 
+Part 1:  246
+Part 2:  134
+
+ -- Level 5 -- 
+Part 1:  913
+Part 2:  717
+
+ -- Level 6 -- 
+Part 1:  6542
+Part 2:  3299
+
+ -- Level 7 -- 
+Part 1:  257
+Part 2:  1038
+
+ -- Level 8 -- 
+Part 1:  2058
+Part 2:  1000
+
+ -- Level 9 -- 
+Part 1:  1721308972
+Part 2:  209694133
+
+ -- Level 10 -- 
+Part 1:  2030
+Part 2:  42313823813632
+
+ -- Level 11 -- 
+Part 1:  2113
+Part 2:  1865
+
+ -- Level 12 -- 
+Part 1:  858
+Part 2:  39140
+
+ -- Level 13 -- 
+Part 1:  2995
+Part 2:  1012171816131114
+
+ -- Level 14 -- 
+Part 1:  9628746976360
+Part 2:  4574598714592
+
+ -- Level 15 -- 
+Part 1:  959
+Part 2:  116590
+
+ -- Level 16 -- 
+Part 1:  20013
+Part 2:  5977293343129
+
+ -- Level 17 -- 
+Part 1:  424
+Part 2:  2460
+
+ -- Level 18 -- 
+Part 1:  2743012121210
+Part 2:  65658760783597
+
+ -- Level 19 -- 
+Part 1:  269
+Part 2:  403
+
+ -- Level 20 -- 
+Part 1:  20033377297069
+Part 2:  2084
+
+ -- Level 21 -- 
+Part 1:  1913
+Part 2:  gpgrb,tjlz,gtjmd,spbxz,pfdkkzp,xcfpc,txzv,znqbr
+
+ -- Level 22 -- 
+Part 1:  34566
+Part 2:  31854
+
+ -- Level 23 -- 
+Part 1:  98752463
+Part 2:  2000455861
+
+ -- Level 24 -- 
+Part 1:  360
+Part 2:  3924
+
+ -- Level 25 -- 
+Part 1:  17032383
