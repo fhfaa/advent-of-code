@@ -3,7 +3,7 @@ import { Puzzle } from "./puzzle";
 const { spawnSync } = require('child_process');
 const { existsSync } = require('fs');
 
-const years = [2019, 2020, 2021, 2022, 2023];
+const years = [2019, 2020, 2021, 2022, 2023, 2024];
 
 
 async function runDay(year: number, day: number, runTests = false) {
