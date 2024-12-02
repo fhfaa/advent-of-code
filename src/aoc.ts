@@ -1,7 +1,7 @@
 import { Puzzle } from "./puzzle";
 
-const { spawnSync } = require('child_process');
-const fs = require('fs');
+import { spawnSync } from 'child_process';
+import fs from 'fs';
 
 type Args = {
   year: number;
