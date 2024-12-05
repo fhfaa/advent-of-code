@@ -6,6 +6,7 @@ import fs from 'fs';
 type Args = {
   year: number;
   day: number;
+  testsOnly: boolean;
 };
 
 class AOC {
@@ -13,7 +14,7 @@ class AOC {
   JS_YEARS = [2019, 2020, 2021];
 
   // Run the puzzle for a specific day
-  private async runDay(year: number, day: number, runTests = false) {
+  private async runDay(year: number, day: number, runTests = false, testsOnly = false) {
 
     // Legacy: JS, until 2021
     // Spawn a new NodeJS process to run it. Forward stdout to console.log
@@ -25,10 +26,10 @@ class AOC {
         console.log(out);
       }
 
-      // TypeScript
     } else {
+      // TypeScript
       console.log(` -- Level ${day} -- `);
-      await Puzzle.loadAndExec(year, day, { runTests });
+      await Puzzle.loadAndExec(year, day, { runTests, testsOnly });
     }
   }
 
@@ -60,6 +61,7 @@ class AOC {
     return {
       year: this.YEARS.includes(yearArg) ? yearArg : 0,
       day: dayArg && dayArg >= 1 && dayArg <= 25 ? dayArg : 0,
+      testsOnly: argv.slice(4).some((arg) => arg === 'testonly'),
     }
   }
 
@@ -70,7 +72,7 @@ class AOC {
         if (args.day) {
           // Run one day
           console.log(`\n-- ONE DAY: ${args.year} ${args.day} --\n`);
-          this.runDay(args.year, args.day, true);
+          this.runDay(args.year, args.day, true, args.testsOnly);
 
 
         } else {

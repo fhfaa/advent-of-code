@@ -25,6 +25,11 @@ export interface PuzzleTest {
   params?: any;
 }
 
+export interface TestOptions {
+  runTests?: boolean;
+  testsOnly?: boolean;
+}
+
 export interface PuzzleDefinition {
   year?: number,
   day?: number,
@@ -33,7 +38,7 @@ export interface PuzzleDefinition {
   tests?: PuzzleTest[];
 }
 
-export class Puzzle {
+export class Puzzle{
   input1: string;
   input2: string;
   tests: PuzzleTest[] = [];
@@ -172,7 +177,7 @@ export class Puzzle {
   }
 
 
-  public static async loadAndExec(year: number, day: number, opts: { runTests?: boolean } = {}) {
+  public static async loadAndExec(year: number, day: number, opts: TestOptions = {}) {
     if (!Puzzle.puzzleExists(year, day)) {
       console.log('Part 1: ', Logger.wrapString(LogType.Failure, 'TODO - File not found'));
       console.log('Part 2: ', Logger.wrapString(LogType.Failure, 'TODO - File not found\n'));
@@ -180,16 +185,16 @@ export class Puzzle {
     }
 
     const filename = `${__dirname}/${year}/${day}`;
-
     const puzzleDef: PuzzleDefinition = (await import(filename)).default;
-
     const puzzle = new Puzzle({ ...puzzleDef, year, day });
 
-    if (opts.runTests) {
+    if (opts.runTests || opts.testsOnly) {
       puzzle.runTests();
     }
 
-    const results = puzzle.run();
-    Puzzle.printResults(results);
+    if (!opts.testsOnly) {
+      const results = puzzle.run();
+      Puzzle.printResults(results);
+    }
   }
 }
