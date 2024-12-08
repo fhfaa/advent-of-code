@@ -29,12 +29,13 @@ const parseInput = (input: string, wallChr = '#', guardChr = '^'): Parsed => {
       return rowArr;
     });
 
+    map[guard[Y]][guard[X]] = EMPTY;
 
     return { map, guard };
 }
 
 
-const walk = (map: XMap, guard: Guard, withDirection: boolean): { visited: Set<string>; routeIsCircular: boolean; } => {
+const walk1 = (map: XMap, guard: Guard, withDirection: boolean): { visited: Set<string>; routeIsCircular: boolean; } => {
   let curDirection = UP;
 
   const visited = new Set<string>([
@@ -77,11 +78,55 @@ const walk = (map: XMap, guard: Guard, withDirection: boolean): { visited: Set<s
 }
 
 
+const walk2 = (map: XMap, guard: Guard): number => {
+  let curDirection = UP;
+
+  const visited = new Set<string>();
+
+  while (true) {
+    let [nextX, nextY] = guard;
+    let [dx, dy] = directions[curDirection];
+
+    // Walk until obstacle or end of map
+    do {
+      nextX += dx;
+      nextY += dy;
+    } while (map[nextY]?.[nextX] === EMPTY);
+    
+    // Guard has left the map - quit
+    if (map[nextY]?.[nextX] === undefined) {
+      return 0;
+    }
+
+    // Guard hit wall - turn clockwise
+    if (map[nextY][nextX] === WALL) {
+      // move guard to one step before the obstacle
+      //
+      // instead of remembering the visited coords, rememeber only the 
+      // obstacles hit and the direction the guard is currently facing
+      // (obstacles can be hit from different sides) 
+      guard = [nextX - dx, nextY - dy];
+      const key = `${guard[X]},${guard[Y]},${curDirection}`;
+
+      if (visited.has(key)) {
+        return 1;
+      }
+
+      visited.add(key);
+      curDirection = (curDirection + 1) % directions.length;
+      continue;
+    }
+    throw new Error('unreachable 1');
+  }
+  throw new Error('unreachable 2');
+}
+
+
 const def: PuzzleDefinition = {
   part1: (input, isTest = false): number => {
     let { guard, map } = parseInput(input);
     
-    const { visited } = walk(map, guard, false);
+    const { visited } = walk1(map, guard, false);
     return visited.size;
   },
 
@@ -91,7 +136,7 @@ const def: PuzzleDefinition = {
     // re-run part 1 to get all visited spots from the original route
     // it doesn't make sense to place the item anywhere else.
     // remove guard starting position.
-    const part1 = walk(map, guard, false);
+    const part1 = walk1(map, guard, false);
     const positions = [...part1.visited.values()]
       .filter((entry) => entry !== `${guard[X]},${guard[Y]}`);
 
@@ -109,9 +154,7 @@ const def: PuzzleDefinition = {
       lastPositionTried = [x,y];
 
       // Count ciruclar routes
-      return walk(map, guard, true).routeIsCircular
-        ? numCircular + 1
-        : numCircular;
+      return numCircular + walk2(map, guard);
     }, 0);
   },
 
