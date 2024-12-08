@@ -1,4 +1,21 @@
 export class MatrixUtils {
+    static charsFromInput(input: string): string[][] {
+        return input
+            .split('\n')
+            .map((line) => line
+                .split('')
+            ); 
+    }
+
+    static numbersFromInput(input: string): number[][] {
+        return input
+            .split('\n')
+            .map((line) => line
+                .split('')
+                .map(parseFloat)
+            );
+    }
+
     static flip<T>(matrix: T[][]): T[][] {
         const ret: T[][] = [];
     
@@ -44,6 +61,15 @@ export class DebugMatrix<T> {
             rows.push(row);
         }
         console.log(rows.join('\n'));
-    } 
+    }
 
+    static fromCoordsSet(s: Set<string>, fillChar = '#', emptyChar = '.') {
+        const m = new DebugMatrix(emptyChar);
+
+        for (let [key] of s.entries()) {
+            const [x, y] = key.split(',');
+            m.add(+x, +y, fillChar);
+        }
+        return m;
+    }
 }
