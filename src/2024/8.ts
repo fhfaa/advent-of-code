@@ -1,6 +1,4 @@
 import { PuzzleDefinition } from "../puzzle";
-import { DebugMatrix } from "../utils/matrix.utils";
-
 
 const EMPTY = '.';
 const X = 0, Y = 1;
